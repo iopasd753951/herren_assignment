@@ -130,4 +130,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'accounts_api.UserRegister'
+AUTH_USER_MODEL = 'accounts_api.UserAccount'

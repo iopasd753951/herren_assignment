@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 
-class UserRegisterManager(BaseUserManager):
+class UserAccountManager(BaseUserManager):
     """ 모델 매니저 """
 
     def create_user(self, email, name, password=None):
@@ -29,7 +29,7 @@ class UserRegisterManager(BaseUserManager):
         return user
 
 
-class UserRegister(AbstractBaseUser, PermissionsMixin):
+class UserAccount(AbstractBaseUser, PermissionsMixin):
     """ 유저 계정 모델 """
 
     email = models.EmailField(primary_key=True, verbose_name='이메일')
@@ -38,7 +38,7 @@ class UserRegister(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
     is_admin = models.BooleanField(default=False, verbose_name='관리자 여부')
 
-    objects = UserRegisterManager()
+    objects = UserAccountManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
