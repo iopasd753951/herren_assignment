@@ -44,4 +44,4 @@ class UserRegister(AbstractBaseUser):
     REQUIRED_FIELDS = ['name']
 
     class Meta:
-        db_table = 'users'
+        db_table = 'accounts'
