@@ -29,7 +29,7 @@ class UserRegisterManager(BaseUserManager):
         return user
 
 
-class UserRegister(AbstractBaseUser):
+class UserRegister(AbstractBaseUser, PermissionsMixin):
     """ 유저 계정 모델 """
 
     email = models.EmailField(primary_key=True, verbose_name='이메일')
