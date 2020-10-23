@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'mail_register',
+    'rest_framework',
+
+    'accounts_api',
 ]
 
 MIDDLEWARE = [
@@ -128,4 +130,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'mail_register.UserRegister'
+AUTH_USER_MODEL = 'accounts_api.UserRegister'
