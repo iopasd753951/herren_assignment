@@ -6,9 +6,10 @@ from accounts_api import models
 class UserAccountSerializer(serializers.ModelSerializer):
     """ 유저 계정 시리얼라이저 """
 
-    model = models.UserAccount
-    fields = ('email, name, password')
-    extra_kwargs = {'password': {'write_only': True}}
+    class Meta:
+        model = models.UserAccount
+        fields = ('email', 'name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         """ (POST) 유저 생성 """
