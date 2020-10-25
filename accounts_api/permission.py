@@ -11,4 +11,4 @@ class UpdateOwnAccount(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return obj.id == request.user.id
+        return obj.email == request.user.email
