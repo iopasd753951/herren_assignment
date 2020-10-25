@@ -22,7 +22,7 @@ class UserAccountManager(BaseUserManager):
         """ 관리자 생성 """
         user = self.create_user(email, name, password)
         user.is_superuser = True
-        user.is_admin = True
+        user.is_staff = True
 
         user.save(using=self._db)
 
@@ -36,7 +36,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=20, verbose_name='사용자이름')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='가입일')
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
-    is_admin = models.BooleanField(default=False, verbose_name='관리자 여부')
+    is_staff = models.BooleanField(default=False, verbose_name='관리자 여부')
 
     objects = UserAccountManager()
 
@@ -45,3 +45,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = 'accounts'
+
+    def __str__(self):
+        return self.email
