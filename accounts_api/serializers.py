@@ -10,7 +10,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.UserAccount
-        fields = ('email', 'name', 'password')
+        fields = ('email', 'name', 'password', 'is_leave')
         extra_kwargs = {
             'password': {
                 'write_only': True,
@@ -30,6 +30,20 @@ class UserAccountSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+    def update(self, instance, validated_data):
+        """ 계정 정보수정 """
+
+        query_set = models.UserAccount.objects.all()
+
+        if 'password' in validated_data:
+            password = validated_data.pop('password')
+            instance.set_password(password)
+
+        if validated_data.is_leave:
+            pass
+
+        return super().update(instance, validated_data)
 
 
 class LoginAuthTokenSerializer(serializers.Serializer):
@@ -71,3 +85,26 @@ class LoginAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class UserMailListSerializer(serializers.ModelSerializer):
+    """ 유저 메일 리스트 시리얼라이저 """
+
+    class Meta:
+        model = models.UserMailList
+        fields = ('id', 'added_email', 'added_name')
+
+    def create(self, validated_data):
+        """ (post) 메일링리스트에 추가 """
+        if models.UserAccount.objects.filter(validated_data['added_email']).exists():
+            if not models.UserMailList.objects.filter(validated_data['added_email']).exists():
+                user = models.UserMailList(
+                    added_email=validated_data['email'],
+                    added_name=validated_data['name'],
+                ).save()
+            else:
+                return "중복 에러메시지"
+        else:
+            return "존재하지않는 에러메세지"
+
+        return user
