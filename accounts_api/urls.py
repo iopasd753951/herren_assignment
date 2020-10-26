@@ -5,7 +5,8 @@ from accounts_api import views
 
 
 router = DefaultRouter()
-router.register('signup', views.UserAccountViewSet)
+router.register('signup', views.UserAccountViewSet, basename='회원가입')
+router.register('mail-list', views.UserMailListViewSet, basename='메일링리스트')
 
 urlpatterns = [
     path('', include(router.urls)),
