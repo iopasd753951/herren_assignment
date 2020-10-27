@@ -10,7 +10,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.UserAccount
-        fields = ('email', 'name', 'password', 'is_leave')
+        fields = ('id', 'email', 'name', 'password')
         extra_kwargs = {
             'password': {
                 'write_only': True,
@@ -34,14 +34,9 @@ class UserAccountSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         """ 계정 정보수정 """
 
-        query_set = models.UserAccount.objects.all()
-
         if 'password' in validated_data:
             password = validated_data.pop('password')
             instance.set_password(password)
-
-        if validated_data.is_leave:
-            pass
 
         return super().update(instance, validated_data)
 
@@ -51,7 +46,7 @@ class LoginAuthTokenSerializer(serializers.Serializer):
 
     class Meta:
         model = models.UserAccount
-        fields = {'email', 'password'}
+        fields = {'id', 'email', 'password'}
 
     email = serializers.EmailField(label=_("email"))
     password = serializers.CharField(
@@ -72,10 +67,6 @@ class LoginAuthTokenSerializer(serializers.Serializer):
         if email and password:
             user = authenticate(request=self.context.get('request'),
                                 email=email, password=password)
-
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
             if not user:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
@@ -92,19 +83,26 @@ class UserMailListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.UserMailList
-        fields = ('id', 'added_email', 'added_name')
+        fields = ('id', 'user_account', 'added_email', 'added_name')
+        extra_kwargs = {
+            'user_account':  {'read_only': True},
+            'added_name': {'read_only': True},
+        }
 
     def create(self, validated_data):
         """ (post) 메일링리스트에 추가 """
-        if models.UserAccount.objects.filter(validated_data['added_email']).exists():
-            if not models.UserMailList.objects.filter(validated_data['added_email']).exists():
+
+        if models.UserAccount.objects.filter(email=validated_data['added_email']).exists():
+            if not models.UserMailList.objects.filter(added_email=validated_data['added_email']).exists():
                 user = models.UserMailList(
-                    added_email=validated_data['email'],
-                    added_name=validated_data['name'],
-                ).save()
+                    added_email=validated_data['added_email'].text(),
+                    added_name=models.UserAccount.objects.get(email=validated_data['added_email']).name,
+                )
             else:
                 return "중복 에러메시지"
         else:
             return "존재하지않는 에러메세지"
+
+        user.save()
 
         return user
