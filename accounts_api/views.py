@@ -1,7 +1,8 @@
+from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.settings import api_settings
 from rest_framework.decorators import action
 
@@ -16,10 +17,6 @@ class UserAccountViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permission.UpdateOwnAccount,)
 
-    @action(detail=True, methods=['post'])
-    def leave(self, request):
-        pass
-
 
 class UserLoginApiView(ObtainAuthToken):
     """ 유저 로그인 이메일과 패스워드 """
@@ -33,4 +30,4 @@ class UserMailListViewSet(viewsets.ModelViewSet):
     queryset = models.UserMailList.objects.all()
     serializer_class = serializers.UserMailListSerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permission.UpdateOwnAccount,)
+    permission_classes = (permission.UpdateOwnAccount, IsAuthenticated)
