@@ -11,7 +11,7 @@ class UpdateOwnAccount(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return obj.email == request.user.email
+        return obj.id == request.user.id
 
 
 class UpdateOwnMailList(permissions.BasePermission):
@@ -22,5 +22,5 @@ class UpdateOwnMailList(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return obj.user == request.user.user
+        return obj.user_account.id == request.user.id
 
