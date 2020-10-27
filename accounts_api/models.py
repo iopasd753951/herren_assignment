@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, User
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.conf import settings
 
 
 class UserAccountManager(BaseUserManager):
@@ -32,11 +32,8 @@ class UserAccountManager(BaseUserManager):
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     """ 유저 계정 모델 """
-    email = models.EmailField(primary_key=True, verbose_name='이메일')
+    email = models.EmailField(unique=True, verbose_name='이메일')
     name = models.CharField(max_length=20, verbose_name='사용자이름')
-    # email = models.CharField( max_length=200, verbose_name='이메일', unique=True)
-    # name = models.CharField(max_length=20, verbose_name='사용자이름', primary_key=True)
-    is_leave = models.BooleanField(default=False, verbose_name='탈퇴 여부')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='가입일')
     is_active = models.BooleanField(default=True, verbose_name='활성화 여부')
     is_staff = models.BooleanField(default=False, verbose_name='관리자 여부')
@@ -58,6 +55,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 class UserMailList(models.Model):
     """ 메일 리스트 모델 """
-    user = models.ForeignKey(UserAccount, related_name='user_mail_list', on_delete=models.CASCADE)
+    user_account = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=True)
     added_email = models.EmailField(verbose_name='추가할 이메일')
     added_name = models.CharField(max_length=20, verbose_name='추가할 사용자이름')
