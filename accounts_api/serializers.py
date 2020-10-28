@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
@@ -95,13 +96,13 @@ class UserMailListSerializer(serializers.ModelSerializer):
         if models.UserAccount.objects.filter(email=validated_data['added_email']).exists():
             if not models.UserMailList.objects.filter(added_email=validated_data['added_email']).exists():
                 user = models.UserMailList(
-                    added_email=validated_data['added_email'].text(),
+                    added_email=validated_data['added_email'],
                     added_name=models.UserAccount.objects.get(email=validated_data['added_email']).name,
                 )
             else:
-                return "중복 에러메시지"
+                return HttpResponse("메일 리스트 이미 있습니다!", status=403)
         else:
-            return "존재하지않는 에러메세지"
+            return HttpResponse("해당메일이 존재하지 않습니다.", status=404)
 
         user.save()
 
