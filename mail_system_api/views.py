@@ -18,7 +18,6 @@ class MailSystemAPIView(views.APIView):
         headers = {'Authorization': 'herren-recruit-python'}
         email = request.data.get('email')
         param = {'email': email}
-        print(request.data.get('email'))
         mail_box = requests.get(
             'http://python.recruit.herrencorp.com/api/v1/inbox/' + str(email),
             headers=headers,
@@ -38,7 +37,6 @@ class MailSystemAPIView(views.APIView):
         mailto = request.data['mailto']
         subject = request.data['subject']
         content = request.data['content']
-        print(mailto)
         try:
             models.UserMailList.objects.get(added_email=mailto)
 
